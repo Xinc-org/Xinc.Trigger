@@ -12,6 +12,11 @@ What is Xinc
 
 Xinc is a server system to manage continous integration and monitoring.
 
+What is Xinc.Trigger
+--------------------
+
+Xinc.Trigger is a plugin for Xinc.Server. It provides different lowlevel trigger methods to start tasks.
+
 Xinc System Requirements
 ------------------------
 
