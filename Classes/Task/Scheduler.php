@@ -86,7 +86,7 @@ class Scheduler extends TaskAbstract
         }
         $lastBuild = $build->getLastBuild()->getBuildTime();
 
-        if ($lastBuild != null ) {
+        if ($lastBuild != null) {
             $nextBuild = $this->getInterval() + $lastBuild;
             /**
              * Make sure that we dont rerun every build if the daemon was paused

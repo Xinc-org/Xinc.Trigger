@@ -89,5 +89,5 @@ abstract class TaskAbstract extends \Xinc\Core\Task\TaskAbstract //implements Xi
      *
      * @return integer next build timestamp
      */
-    abstract function getNextTime(\Xinc\Core\Job\JobInterface $job);
+    abstract public function getNextTime(\Xinc\Core\Job\JobInterface $job);
 }

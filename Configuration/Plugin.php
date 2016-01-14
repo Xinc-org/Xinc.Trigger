@@ -27,14 +27,18 @@
  */
 
 \Xinc\Core\Task\Registry::getInstance()->register(
-    'trigger', new \Xinc\Trigger\Task\Triggers()
+    'trigger',
+    new \Xinc\Trigger\Task\Triggers()
 );
 \Xinc\Core\Task\Registry::getInstance()->register(
-    'cron', new \Xinc\Trigger\Task\Cron()
+    'cron',
+    new \Xinc\Trigger\Task\Cron()
 );
 \Xinc\Core\Task\Registry::getInstance()->register(
-    'schedule', new \Xinc\Trigger\Task\Scheduler()
+    'schedule',
+    new \Xinc\Trigger\Task\Scheduler()
 );
 \Xinc\Core\Task\Registry::getInstance()->register(
-    'sensor', new \Xinc\Trigger\Task\Sensor()
+    'sensor',
+    new \Xinc\Trigger\Task\Sensor()
 );

@@ -106,7 +106,7 @@ class Cron extends TaskAbstract
         //var_dump($build);
         $lastBuild = $build->getLastBuild()->getBuildTime();
 
-        if ($lastBuild == null ) {
+        if ($lastBuild == null) {
             $lastBuild = 0;
         }
         //$nextBuild = $this->getLastScheduledRunTime($this->timer . ' test',$lastBuild);
@@ -119,7 +119,7 @@ class Cron extends TaskAbstract
         return $nextBuild;
     }
 
-    public function incDate(&$dateArr, $amount, $unit, $increase=true)
+    public function incDate(&$dateArr, $amount, $unit, $increase = true)
     {
         if ($unit=="mday") {
             $compareTime = mktime(null, null, null, $dateArr["mon"], 1, date('Y'));
@@ -165,13 +165,13 @@ class Cron extends TaskAbstract
 
     public function parseElement($element, &$targetArray, $numberOfElements)
     {
-        $subelements = explode(",",$element);
-        for ($i=0;$i<$numberOfElements;$i++) {
+        $subelements = explode(",", $element);
+        for ($i = 0; $i < $numberOfElements; $i++) {
             $targetArray[$i] = $subelements[0]=="*";
         }
 
-        for ($i=0;$i<count($subelements);$i++) {
-            if (preg_match("~^(\\*|([0-9]{1,2})(-([0-9]{1,2}))?)(/([0-9]{1,2}))?$~",$subelements[$i],$matches)) {
+        for ($i = 0; $i < count($subelements); $i++) {
+            if (preg_match("~^(\\*|([0-9]{1,2})(-([0-9]{1,2}))?)(/([0-9]{1,2}))?$~", $subelements[$i], $matches)) {
                 if ($matches[1] == '*') {
                     $matches[2] = 0;        // from
                     $matches[4] = $numberOfElements;        //to
@@ -186,7 +186,7 @@ class Cron extends TaskAbstract
                     $matches[6] = 1;
                 }
                 for ($j = ltrim($matches[2], '0'); $j <= ltrim($matches[4], '0'); $j += ltrim($matches[6], '0')) {
-                    $targetArray[$j] = TRUE;
+                    $targetArray[$j] = true;
                 }
             }
         }
@@ -195,7 +195,7 @@ class Cron extends TaskAbstract
     public function getTimeFromCron($last)
     {
         if (preg_match("~^([-0-9,/*]+)\\s+([-0-9,/*]+)\\s+([-0-9,/*]+)\\s+([-0-9,/*]+)\\s+([-0-7,/*]+|(-|/|Sun|Mon|Tue|Wed|Thu|Fri|Sat)+)\\s+([^#]*)\\s*(#.*)?$~i", $this->timer . ' test', $job)) {
-            return $this->getLastScheduledRunTime($job, $last+60);
+            return $this->getLastScheduledRunTime($job, $last + 60);
         } else {
             return false;
         }
@@ -203,7 +203,7 @@ class Cron extends TaskAbstract
 
     public function getLastScheduledRunTime($job, $last)
     {
-        $extjob = Array();
+        $extjob = array();
 
         $this->parseElement($job[self::PC_MINUTE], $extjob[self::PC_MINUTE], 60);
         $this->parseElement($job[self::PC_HOUR], $extjob[self::PC_HOUR], 24);
@@ -227,28 +227,27 @@ class Cron extends TaskAbstract
         }
         $minutesAhead = 0;
 
-        while (
-            $minutesAhead<2678400 AND
+        while ($minutesAhead < 2678400 and
             (!$extjob[self::PC_MINUTE][$dateArr["minutes"]]
-            OR !$extjob[self::PC_HOUR][$dateArr["hours"]]
-            OR !$extjob[self::PC_DOM][$dateArr["mday"]]
-            OR !$extjob[self::PC_DOW][$dateArr["wday"]])
-            OR !$extjob[self::PC_MONTH][$dateArr["mon"]]
+            or !$extjob[self::PC_HOUR][$dateArr["hours"]]
+            or !$extjob[self::PC_DOM][$dateArr["mday"]]
+            or !$extjob[self::PC_DOW][$dateArr["wday"]])
+            or !$extjob[self::PC_MONTH][$dateArr["mon"]]
         ) {
             if (!$extjob[self::PC_DOM][$dateArr["mday"]]
-                OR !$extjob[self::PC_DOW][$dateArr["wday"]]
+                or !$extjob[self::PC_DOW][$dateArr["wday"]]
             ) {
-                $this->incDate($dateArr,1,"mday");
-                $minutesAhead+=60*60*24;
+                $this->incDate($dateArr, 1, "mday");
+                $minutesAhead += 60 * 60 * 24;
                 continue;
             }
             if (!$extjob[self::PC_HOUR][$dateArr["hours"]]) {
-                $this->incDate($dateArr,1,"hour");
-                $minutesAhead+=60;
+                $this->incDate($dateArr, 1, "hour");
+                $minutesAhead += 60;
                 continue;
             }
             if (!$extjob[self::PC_MINUTE][$dateArr["minutes"]]) {
-                $this->incDate($dateArr,1,"minute");
+                $this->incDate($dateArr, 1, "minute");
                 $minutesAhead++;
                 continue;
             }
