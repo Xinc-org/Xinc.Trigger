@@ -92,31 +92,26 @@ class Cron extends TaskAbstract
     }
 
     /**
-     * Calculates the next build timestamp.
+     * Calculates the real next job runtime dependend on lastJob.
      *
-     * @param Xinc\Core\Job\JobInterface $job
+     * @param Xinc\Core\Job\JobInterface $lastJob
      *
-     * @return integer next build timestamp
+     * @return integer next job runtime as timestamp
      */
-    public function getNextTime(\Xinc\Core\Job\JobInterface $job)
+    public function getNextTime(\Xinc\Core\Job\JobInterface $lastJob = null)
     {
-        if ($build->getStatus() == \Xinc\Core\Job\JobInterface::STOPPED) {
-            return null;
+        $lastRunTime = 0;
+        if ($lastJob != null) {
+            $lastRunTime = $lastJob->getStartTime();
         }
-        //var_dump($build);
-        $lastBuild = $build->getLastBuild()->getBuildTime();
 
-        if ($lastBuild == null) {
-            $lastBuild = 0;
-        }
-        //$nextBuild = $this->getLastScheduledRunTime($this->timer . ' test',$lastBuild);
-        $nextBuild = $this->getTimeFromCron($lastBuild);
-        $build->debug(
-            'getNextBuildTime:'
-            . ' lastbuild: ' . date('Y-m-d H:i:s', $lastBuild)
-            . ' nextbuild: ' . date('Y-m-d H:i:s', $nextBuild)
-        );
-        return $nextBuild;
+        $nextRunTime = $this->getTimeFromCron($lastRunTime);
+//         $build->debug(
+//             'getNextBuildTime:'
+//             . ' lastbuild: ' . date('Y-m-d H:i:s', $lastRunTime)
+//             . ' nextbuild: ' . date('Y-m-d H:i:s', $nextRunTime)
+//         );
+        return $nextRunTime;
     }
 
     public function incDate(&$dateArr, $amount, $unit, $increase = true)

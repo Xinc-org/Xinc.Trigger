@@ -82,13 +82,13 @@ class Sensor extends TaskAbstract
     }
 
     /**
-     * Calculates the next build timestamp.
+     * Calculates the real next job runtime dependend on lastJob.
      *
-     * @param Xinc\Core\Job\JobInterface $job
+     * @param Xinc\Core\Job\JobInterface $lastJob
      *
-     * @return integer next build timestamp
+     * @return integer next job runtime as timestamp
      */
-    public function getNextTime(\Xinc\Core\Job\JobInterface $build)
+    public function getNextTime(\Xinc\Core\Job\JobInterface $lastJob = null)
     {
         if (file_exists($this->file)) {
             unlink($this->file);

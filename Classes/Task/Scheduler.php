@@ -73,38 +73,38 @@ class Scheduler extends TaskAbstract
     }
 
     /**
-     * Calculates the next build timestamp.
+     * Calculates the real next job runtime dependend on lastJob.
      *
-     * @param Xinc\Core\Job\JobInterface $job
+     * @param Xinc\Core\Job\JobInterface $lastJob
      *
-     * @return integer next build timestamp
+     * @return integer next job runtime as timestamp
      */
-    public function getNextTime(\Xinc\Core\Job\JobInterface $job)
+    public function getNextTime(\Xinc\Core\Job\JobInterface $lastJob = null)
     {
-        if ($build->getStatus() == \Xinc\Core\Job\JobInterface::STOPPED) {
-            return null;
+        $lastRunTime = 0;
+        if ($lastJob != null) {
+            $lastRunTime = $lastJob->getStartTime();
         }
-        $lastBuild = $build->getLastBuild()->getBuildTime();
 
-        if ($lastBuild != null) {
-            $nextBuild = $this->getInterval() + $lastBuild;
+        if ($lastJob != null) {
+            $nextRunTime = $this->getInterval() + $lastRunTime;
             /**
              * Make sure that we dont rerun every build if the daemon was paused
              */
-            if ($nextBuild + $this->getInterval() < time()) {
-                $nextBuild = time();
+            if ($nextRunTime + $this->getInterval() < time()) {
+                $nextRunTime = time();
             }
         } else {
             // never ran, schedule for now
-            $nextBuild = time();
+            $nextRunTime = time();
         }
 
-        $build->debug(
-            'getNextBuildTime:'
-            . ' lastbuild: ' . date('Y-m-d H:i:s', $lastBuild)
-            . ' nextbuild: ' . date('Y-m-d H:i:s', $nextBuild)
-        );
+//         $build->debug(
+//             'getNextTime:'
+//             . ' lastbuild: ' . date('Y-m-d H:i:s', $lastRunTime)
+//             . ' nextbuild: ' . date('Y-m-d H:i:s', $nextRunTime)
+//         );
 
-        return $nextBuild;
+        return $nextRunTime;
     }
 }

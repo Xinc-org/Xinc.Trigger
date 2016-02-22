@@ -37,9 +37,9 @@ abstract class TaskAbstract extends \Xinc\Core\Task\TaskAbstract //implements Xi
     protected $pluginSlot = \Xinc\Core\Task\Slot::INIT_PROCESS;
 
     /**
-     * @var string Name of the task
+     * @var integer next calculated job runtime
      */
-    protected $nextBuildTime = null;
+    protected $nextJobRunTime = null;
 
     /**
      * Initialize the task
@@ -62,32 +62,37 @@ abstract class TaskAbstract extends \Xinc\Core\Task\TaskAbstract //implements Xi
      */
     public function process(\Xinc\Core\Job\JobInterface $job)
     {
-        if (time() >= $this->nextBuildTime) {
-            $this->nextBuildTime = null;
+        if (time() >= $this->nextJobRunTime) {
+            $this->nextJobRunTime = null;
         }
     }
 
     /**
-     * Gets the last calculated build timestamp.
+     * Gets the next calculated job runtime for given project.
      *
-     * @param Xinc\Core\Job\JobInterface $job
+     * @param Xinc\Core\Models\Project $project
      *
-     * @return integer next build timestamp
+     * @return integer next job runtime as timestamp
      */
-    public function getNextBuildTime(\Xinc\Core\Job\JobInterface $job)
+    public function getNextProjectRunTime(\Xinc\Core\Models\Project $project)
     {
-        if ($this->nextBuildTime === null) {
-            $this->nextBuildTime = $this->getNextTime($job);
+        if ($this->nextJobRunTime === null) {
+            if ($project->getStatus() !== \Xinc\Core\Project\Status::ENABLED) {
+                return null;
+            }
+
+            $this->nextJobRunTime = $this->getNextTime($project->getLastJob());
         }
-        return $this->nextBuildTime;
+
+        return $this->nextJobRunTime;
     }
 
     /**
-     * Calculates the real next build timestamp.
+     * Calculates the real next job runtime dependend on lastJob.
      *
-     * @param Xinc\Core\Job\JobInterface $job
+     * @param Xinc\Core\Job\JobInterface $lastJob
      *
-     * @return integer next build timestamp
+     * @return integer next job runtime as timestamp
      */
-    abstract public function getNextTime(\Xinc\Core\Job\JobInterface $job);
+    abstract public function getNextTime(\Xinc\Core\Job\JobInterface $lastJob = null);
 }
